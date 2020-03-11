@@ -1,0 +1,6 @@
+spring:
+
+datasource:
+  primary:
+    jdbc_url: jdbc:h2:~/demodb;AUTO_SERVER=TRUE
+    username: sa
