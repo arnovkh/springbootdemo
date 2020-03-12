@@ -3,7 +3,10 @@ package com.example.demo.security;
 
 import java.util.Objects;
 
+import com.example.demo.security.users.AppUser;
+import com.example.demo.security.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -25,6 +28,9 @@ public class JwtAuthenticationController {
     private AuthenticationManager authenticationManager;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
     @Autowired
@@ -33,14 +39,17 @@ public class JwtAuthenticationController {
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
 
-        authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
+        Boolean isValid = userService.IsUserValid(new AppUser(authenticationRequest.getUsername(),authenticationRequest.getPassword() ));
+        if(isValid) {
+            final UserDetails userDetails = userDetailsService
+                    .loadUserByUsername(authenticationRequest.getUsername());
 
-        final UserDetails userDetails = userDetailsService
-                .loadUserByUsername(authenticationRequest.getUsername());
+            final String token = jwtTokenUtil.generateToken(userDetails);
 
-        final String token = jwtTokenUtil.generateToken(userDetails);
-
-        return ResponseEntity.ok(new JwtResponse(token));
+            return ResponseEntity.ok(new JwtResponse(token));
+        } else {
+            throw new Exception("error");
+        }
     }
 
     private void authenticate(String username, String password) throws Exception {

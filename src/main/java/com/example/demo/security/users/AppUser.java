@@ -1,11 +1,11 @@
 package com.example.demo.security.users;
 
-public class User {
+public class AppUser {
 
     private String username;
     private String password;
 
-    public User(String username, String password) {
+    public AppUser(String username, String password) {
         this.username = username;
         this.password = password;
     }

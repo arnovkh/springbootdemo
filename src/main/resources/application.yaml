@@ -8,9 +8,8 @@ spring:
     locations: classpath:db/migration
     baseline-version: 0
 
-datasource:
-  primary:
-    jdbc_url: jdbc:h2:~/demodb;AUTO_SERVER=TRUE
+  datasource:
+    url: jdbc:h2:~/demodb;AUTO_SERVER=TRUE
     username: sa
 
 jwt:
